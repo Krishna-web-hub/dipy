@@ -15,6 +15,8 @@ It remains licensed as the rest of scipy (BSD-3 license as of October 2023).
 # ## ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ##
 """
 import os
+import sys
+import tempfile
 import textwrap
 
 
@@ -110,7 +112,16 @@ if __name__ == "__main__":
         if relpath.startswith('.'):
             relpath = outfile
 
-        with open(outfile, 'w') as f:
+        if os.path.exists(outfile):
+            with open(outfile) as f:
+                if f.read() == template:
+                    sys.exit(0)
+
+        outdir = os.path.dirname(os.path.abspath(outfile))
+        fd, tmpfile = tempfile.mkstemp(dir=outdir)
+        with os.fdopen(fd, 'w') as f:
             f.write(template)
+        os.chmod(tmpfile, 0o644)
+        os.replace(tmpfile, outfile)
     else:
         print(version)
