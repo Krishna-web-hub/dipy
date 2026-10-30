@@ -378,7 +378,7 @@ if not fs.exists('version.py')
     build_by_default: true,
     output: 'version.py',
     input: '../tools/gitversion.py',
-    command: ['../tools/gitversion.py', '--meson-dist', '--write', 'dipy/version.py'],
+    command: [py3, '@INPUT@', '--write', '@OUTPUT@'],
     install_dir: dipy_dir,
     install_tag: 'python-runtime',
   )
